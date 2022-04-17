@@ -1,4 +1,4 @@
-package com.georgeciachir.az204developmessagebasedsolutions;
+package com.georgeciachir;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
