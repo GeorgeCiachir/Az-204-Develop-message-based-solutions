@@ -1,6 +1,9 @@
+![img_3.png](img_3.png)
+
 Azure supports two types of queue mechanisms: **Service Bus queues** and **Storage queues**
 
 **Service Bus queues** 
+- **Basic tier does not support topics**
 - are part of a broader Azure messaging infrastructure that supports queuing, publish/subscribe, and more advanced 
   integration patterns
 - They're designed to integrate applications or application components that may span multiple communication protocols,
@@ -16,7 +19,7 @@ Azure supports two types of queue mechanisms: **Service Bus queues** and **Stora
 
 ## Consider using Service Bus queues
 As a solution architect/developer, you should consider using Service Bus queues when:
-- Your solution needs to receive messages without having to poll the queue. With Service Bus, you can achieve it by 
+- **Your solution needs to receive messages without having to poll the queue**. With Service Bus, you can achieve it by 
   using a long-polling receive operation using the TCP-based protocols that Service Bus supports
 - Your solution requires the queue to provide a guaranteed first-in-first-out (FIFO) ordered delivery
 - Your solution needs to support automatic duplicate detection
@@ -25,11 +28,11 @@ As a solution architect/developer, you should consider using Service Bus queues 
   for streams, as opposed to messages. When a stream is given to a consuming node, the node can examine the state of 
   the application stream state using transactions
 - Your solution requires transactional behavior and atomicity when sending or receiving multiple messages from a queue
-- Your application handles messages that can exceed 64 KB but won't likely approach the 256-KB limit
+- Your application handles messages that can exceed 64 KB but won't likely approach the 256 KB limit
 
 ## Consider using Storage queues
 As a solution architect/developer, you should consider using Storage queues when:
-- Your application must store over 80 gigabytes of messages in a queue
+- Your application must store over 80 GB of messages in a queue
 - Your application wants to track progress for processing a message in the queue. It's useful if the worker processing 
   a message crashes. Another worker can then use that information to continue from where the prior worker left off
 - You require server side logs of all of the transactions executed against your queues
@@ -42,6 +45,8 @@ As a solution architect/developer, you should consider using Storage queues when
     don't have to be online at the same time
   - **Topics and subscriptions** - enable 1:n relationships between publishers and subscribers
   - **Message sessions** - implement workflows that require message ordering or message deferral
+
+![img_2.png](img_2.png)
 
 ## Advanced features
 
@@ -79,7 +84,12 @@ As a solution architect/developer, you should consider using Storage queues when
 ## Topics and subscriptions
 - Publishers send messages to a topic in the same way that they send messages to a queue But, consumers don't receive 
   messages directly from the topic. Instead, consumers receive messages from subscriptions of the topic
-- A topic subscription resembles a virtual queue that receives copies of the messages that are sent to the topic
+- A topic subscription resembles a virtual queue that receives copies of the messages that are sent to the topic. So, each 
+  subscriber essentially has its own queue that can be individually configured 
+- Topic filters can be specified at the subscription level:
+  - Boolean filters
+  - SQL filters
+  - Correlation filters
 
 ## Explore Service Bus message payloads and serialization
 - Messages carry a payload and metadata
@@ -121,9 +131,21 @@ are used to help applications route messages to particular destinations
 - when in transit or stored inside of Service Bus, the payload is always an opaque, binary block
 - the ContentType property enables applications to describe the payload
 
+# Example of a message-based architecture
+![img_1.png](img_1.png)
+
 # Explore Azure Queue Storage
 - Azure Queue Storage is a service for storing large numbers of messages
-- A queue message can be up to 64 KB in size
+- data in the queue is encrypted by default
+- The storage level data redundancy policy applies to the queue also (LRS / ZRS / GRS / GZRS / RA-GRS / RA-GZRS) 
+- A queue message can be up to 64 KiB in size
+- a single queue cannot exceed 500 TiB
+- a queue supports no more than 5 stored access policies
+- a storage account can support max 20K messages per second (if the message has max 1 KiB)
+- a single queue can support max 2K messages per second (if the message has max 1 KiB)
+- messages on the queues are not deleted by default after consumption. The consumer must explicitly delete the message.
+  If the consumer does not delete it, the message will become available/visible again, after a period of time. This
+  period of time is called **Visibility Timeout**, and it is configurable
 - A queue may contain millions of messages, up to the total capacity limit of a storage account
 - **URL format**
   - Queues are addressable using the URL format https://<storage account>.queue.core.windows.net/<queue>
@@ -132,6 +154,6 @@ are used to help applications route messages to particular destinations
 - **Queue**
   - A queue contains a set of messages
 - **Message**
-  - A message, in any format, of up to 64 KB
-  - For version 2017-07-29 or later, the maximum time-to-live can be any positive number, or -1 indicating 
-    that the message doesn't expire. If this parameter is omitted, the default time-to-live is 7 days.
+  - A message, in any format, of up to 64 KiB
+  - For version 2017-07-29 or later, the maximum time-to-live can be any positive number, or **-1 indicating 
+    that the message doesn't expire**. If this parameter is omitted, the default time-to-live is **7 days**

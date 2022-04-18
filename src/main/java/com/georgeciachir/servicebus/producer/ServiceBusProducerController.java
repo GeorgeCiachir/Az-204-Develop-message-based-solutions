@@ -19,6 +19,7 @@ public class ServiceBusProducerController {
     private static final Logger LOG = LoggerFactory.getLogger(ServiceBusProducerController.class);
 
     private static final String SAS_TOPIC_CONNECTION = "Endpoint=sb://my-messages.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=gVcd16UkTFNIeH5kG6mkC+VA+scqmbKUdAQeQsNI+9k=";
+    private static final String TOPIC_NAME = "firsttopic";
 
     private static final ServiceBusSenderClient TOPIC_PRODUCER = createTopicProducer();
 
@@ -42,7 +43,7 @@ public class ServiceBusProducerController {
         return new ServiceBusClientBuilder()
                 .connectionString(SAS_TOPIC_CONNECTION)
                 .sender()
-                .topicName("firsttopic")
+                .topicName(TOPIC_NAME)
                 .buildClient();
     }
 }

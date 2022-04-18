@@ -17,7 +17,10 @@ import java.util.function.Consumer;
 public class ServiceBusConsumerController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceBusConsumerController.class);
+
     private static final String SAS_TOPIC_CONNECTION = "Endpoint=sb://my-messages.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=gVcd16UkTFNIeH5kG6mkC+VA+scqmbKUdAQeQsNI+9k=";
+    private static final String TOPIC_NAME = "firsttopic";
+    private static final String SUBSCRIPTION_NAME = "simple_subscription";
     private static final ServiceBusProcessorClient CONSUMER = createTopicConsumer();
 
     @PostMapping("/start")
@@ -28,7 +31,7 @@ public class ServiceBusConsumerController {
 
     @PostMapping("/stop")
     public void stop() {
-        LOG.info("Starting the consumer");
+        LOG.info("Stopping the consumer");
         CONSUMER.start();
     }
 
@@ -36,8 +39,8 @@ public class ServiceBusConsumerController {
         return new ServiceBusClientBuilder()
                 .connectionString(SAS_TOPIC_CONNECTION)
                 .processor()
-                .topicName("firsttopic")
-                .subscriptionName("simple_subscription")
+                .topicName(TOPIC_NAME)
+                .subscriptionName(SUBSCRIPTION_NAME)
                 .processMessage(processor())
                 .processError(errorHandler())
                 .disableAutoComplete()
